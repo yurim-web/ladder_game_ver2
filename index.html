@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>사다리타기</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="game_title">사다리타기</h1>
+
+      <div class="game_controls">
+        <div class="input_section">
+          <h3>참가자 설정</h3>
+          <div class="input_group">
+            <label for="participant_count">참가자 수:</label>
+            <input
+              type="number"
+              id="participant_count"
+              min="2"
+              max="19"
+              value="5"
+            />
+          </div>
+          <button id="redraw_btn" class="setup_btn">다시그리기</button>
+        </div>
+      </div>
+
+      <div class="game_area">
+        <div class="ladder_container">
+          <canvas id="ladder_canvas" width="800" height="600"></canvas>
+        </div>
+
+        <div class="game_buttons">
+          <button id="start_btn" class="start_btn">START</button>
+        </div>
+      </div>
+
+      <div class="result_area">
+        <div id="result_display" class="result_display"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
