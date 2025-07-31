@@ -162,6 +162,17 @@ body {
   display: inline-block;
   animation: fadeIn 0.3s ease-in;
 }
+.setup_btn {
+  background: #28a745;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
 @keyframes fadeIn {
   from {

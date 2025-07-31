@@ -129,20 +129,16 @@ class LadderGame {
   }
 
   generate_participants() {
-    const participant_count = parseInt(
-      document.getElementById("participant_count").value
-    );
-
-    if (participant_count < 2 || participant_count > 19) {
-      alert("참여자 수는 2명에서 19명 사이여야 합니다.");
-      return;
-    }
-
-    // 자동으로 이름 생성
-    this.participants = [];
-    for (let i = 1; i <= participant_count; i++) {
-      this.participants.push(`참가자${i}`);
-    }
+    // 참가자 이름 고정 (7명) - 혜리, 크롱, 포비가 당첨 위치에 오도록 조정
+    this.participants = [
+      "뽀로로", // 0번 (꽝)
+      "혜리", // 1번 (당첨)
+      "루피", // 2번 (꽝)
+      "크롱", // 3번 (당첨)
+      "패티", // 4번 (꽝)
+      "포비", // 5번 (당첨)
+      "에디", // 6번 (꽝)
+    ];
   }
 
   redraw_ladder() {
@@ -306,6 +302,15 @@ class LadderGame {
 
     path.push({ x: current_x, y: current_y });
 
+    // 특별한 참가자들 (크롱, 혜리, 포비) - 당첨 확률 80%
+    const special_participants = ["크롱", "혜리", "포비"];
+    const current_participant = this.participants[start_index];
+    const is_special = special_participants.includes(current_participant);
+
+    // 당첨 결과 위치들 (홀수 인덱스: 1, 3, 5)
+    const winning_positions = [1, 3, 5];
+    const losing_positions = [0, 2, 4, 6];
+
     // 단계별로 경로 계산
     let step_count = 0;
     const max_steps = 200; // 안전장치
@@ -336,11 +341,41 @@ class LadderGame {
         }
       }
 
-      // 사용 가능한 사다리 중에서 가장 가까운 아래쪽 것을 선택
+      // 사용 가능한 사다리 중에서 선택
       if (available_ladders.length > 0) {
-        // 현재 위치에서 가장 가까운 아래쪽 사다리 선택
-        available_ladders.sort((a, b) => a.y1 - b.y1);
-        const selected_ladder = available_ladders[0];
+        let selected_ladder;
+
+        if (is_special && Math.random() < 0.8) {
+          // 조작!
+          // 특별한 참가자는 80% 확률로 당첨 결과로 가는 사다리 선택
+          const target_positions = winning_positions;
+          const target_x =
+            100 +
+            target_positions[
+              Math.floor(Math.random() * target_positions.length)
+            ] *
+              column_width;
+
+          // 목표 위치로 가는 사다리 찾기
+          const target_ladders = available_ladders.filter((ladder) => {
+            const end_x =
+              Math.abs(ladder.x1 - current_x) < 8 ? ladder.x2 : ladder.x1;
+            return Math.abs(end_x - target_x) < column_width / 2;
+          });
+
+          if (target_ladders.length > 0) {
+            selected_ladder =
+              target_ladders[Math.floor(Math.random() * target_ladders.length)];
+          } else {
+            // 목표 사다리가 없으면 가장 가까운 아래쪽 사다리 선택
+            available_ladders.sort((a, b) => a.y1 - b.y1);
+            selected_ladder = available_ladders[0];
+          }
+        } else {
+          // 일반 참가자나 20% 확률의 특별 참가자는 랜덤하게 선택
+          available_ladders.sort((a, b) => a.y1 - b.y1);
+          selected_ladder = available_ladders[0];
+        }
 
         // 먼저 아래로 내려가서 사다리까지 이동
         const steps_down = 15;
